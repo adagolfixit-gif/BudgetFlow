@@ -14,11 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Patch UI
-        run: |
-          python - <<'PY'
-          import base64
-          exec(base64.b64decode('REPLACE_B64').decode())
-          PY
+        run: python .github/scripts/sync_status_v0522.py
       - name: Validate JavaScript
         run: |
           python - <<'PY'
