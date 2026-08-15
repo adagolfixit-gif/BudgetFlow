@@ -1,0 +1,40 @@
+name: Recover BudgetFlow direct index
+
+on:
+  push:
+    paths:
+      - '.github/workflows/recover-direct-index.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  recover:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rebuild complete v0.5.1 index from known-good payloads
+        shell: python
+        run: |
+          from pathlib import Path
+          import re, base64, gzip
+          parts=[]
+          for filename,var in [('payload-a.js','BF64A'),('payload-b.js','BF64B'),('payload-c.js','BF64C')]:
+              s=Path(filename).read_text(encoding='utf-8')
+              m=re.fullmatch(rf'window\.{var}="(.*)";',s)
+              if not m:
+                  raise SystemExit(f'Invalid payload file: {filename}')
+              parts.append(m.group(1))
+          raw=gzip.decompress(base64.b64decode(''.join(parts))).decode('utf-8')
+          if 'const VERSION="0.5.1";' not in raw:
+              raise SystemExit('Known-good v0.5.1 marker not found')
+          Path('index.html').write_text(raw,encoding='utf-8')
+          print('Recovered index bytes:',len(raw.encode('utf-8')))
+      - name: Commit recovered standalone index
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Recover BudgetFlow v0.5.1 standalone index"
+          git push
