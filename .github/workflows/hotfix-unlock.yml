@@ -1,0 +1,64 @@
+name: BudgetFlow unlock hotfix
+
+on:
+  push:
+    paths:
+      - '.github/workflows/hotfix-unlock.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch unlock handling
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = '''$("unlockBtn").onclick=async()=>{
+            const pwd=$("unlockPassword").value;try{data=await decryptVault(JSON.parse(localStorage.getItem(LS_VAULT)),pwd);migrateData();currentPassword=pwd;sessionStorage.setItem(LS_SESSION,pwd);$("unlockModal").classList.remove("show");render();fetchCryptoPrices(false);toast("Sejf odblokowany")}catch(e){toast("Nieprawidłowe hasło")}
+          };'''
+          new = '''$("unlockBtn").onclick=async()=>{
+            const pwd=$("unlockPassword").value;
+            let decrypted;
+            try{
+              decrypted=await decryptVault(JSON.parse(localStorage.getItem(LS_VAULT)),pwd);
+            }catch(e){
+              console.warn("Vault decrypt failed",e);
+              toast("Nieprawidłowe hasło");
+              return;
+            }
+            data=decrypted;
+            currentPassword=pwd;
+            sessionStorage.setItem(LS_SESSION,pwd);
+            $("unlockModal").classList.remove("show");
+            try{
+              migrateData();
+              render();
+              fetchCryptoPrices(false);
+              toast("Sejf odblokowany");
+            }catch(e){
+              console.error("BudgetFlow UI after unlock",e);
+              toast("Hasło poprawne — błąd interfejsu: "+(e.message||e));
+            }
+          };'''
+          if old not in s:
+              raise SystemExit('Expected unlock block not found; refusing unsafe patch')
+          s = s.replace(old, new, 1)
+          s = s.replace('UX & Market · v0.5.1','UI Tiles · v0.5.2.1')
+          s = s.replace('BudgetFlow v0.5.2 · UI Tiles','BudgetFlow v0.5.2.1 · Unlock Hotfix')
+          s = s.replace('const VERSION="0.5.2";','const VERSION="0.5.2.1";')
+          s = s.replace('content="0.5.2"','content="0.5.2.1"')
+          p.write_text(s, encoding='utf-8')
+      - name: Commit hotfix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Hotfix BudgetFlow unlock error handling"
+          git push
