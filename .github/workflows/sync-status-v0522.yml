@@ -1,0 +1,38 @@
+name: BudgetFlow v0.5.2.2 sync status
+
+on:
+  push:
+    paths:
+      - '.github/workflows/sync-status-v0522.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch UI
+        run: |
+          python - <<'PY'
+          import base64
+          exec(base64.b64decode('REPLACE_B64').decode())
+          PY
+      - name: Validate JavaScript
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text()
+          js='\n'.join(re.findall(r'<script(?: [^>]*)?>(.*?)</script>',s,re.S))
+          Path('/tmp/budgetflow.js').write_text(js)
+          PY
+          node --check /tmp/budgetflow.js
+      - name: Commit v0.5.2.2
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "BudgetFlow v0.5.2.2 sync status and balance colors"
+          git push
