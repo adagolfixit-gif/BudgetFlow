@@ -1,0 +1,42 @@
+name: BudgetFlow v0.5.2.3 migrate Drive preference
+
+on:
+  push:
+    paths:
+      - '.github/workflows/auto-resume-migrate-v0523.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Migrate previous Drive sync state
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          old='function driveAutoResumeEnabled(){return localStorage.getItem(LS_DRIVE_AUTO_RESUME)==="1"}'
+          new='function driveAutoResumeEnabled(){if(localStorage.getItem(LS_DRIVE_AUTO_RESUME)==="1")return true;if(getSyncState()){localStorage.setItem(LS_DRIVE_AUTO_RESUME,"1");return true}return false}'
+          if old not in s: raise SystemExit('auto resume function not found')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
+      - name: Validate JavaScript
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text()
+          Path('/tmp/budgetflow.js').write_text('\n'.join(re.findall(r'<script(?: [^>]*)?>(.*?)</script>',s,re.S)))
+          PY
+          node --check /tmp/budgetflow.js
+      - name: Commit migration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "BudgetFlow v0.5.2.3 migrate remembered Drive preference"
+          git push
