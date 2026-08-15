@@ -1,0 +1,55 @@
+name: BudgetFlow vault compatibility hotfix
+
+on:
+  push:
+    paths:
+      - '.github/workflows/vault-compat-hotfix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore vault compatibility
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          crypto_pattern=r'async function deriveKey\(p,s\)\{.*?\}\nconst b64=.*?\nasync function encryptVault\(d,p\)\{.*?\}\nasync function decryptVault\(v,p\)\{.*?\}\n'
+          crypto_new='''async function deriveKey(p,s,iterations=600000){const material=await crypto.subtle.importKey("raw",new TextEncoder().encode(p),"PBKDF2",false,["deriveKey"]);return crypto.subtle.deriveKey({name:"PBKDF2",salt:s,iterations,hash:"SHA-256"},material,{name:"AES-GCM",length:256},false,["encrypt","decrypt"])}
+const b64=a=>btoa(String.fromCharCode(...a)),unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function encryptVault(d,p){const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),k=await deriveKey(p,salt,600000),ct=new Uint8Array(await crypto.subtle.encrypt({name:"AES-GCM",iv},k,new TextEncoder().encode(JSON.stringify(d))));return{format:"BudgetFlow-BFDB",version:2,kdf:"PBKDF2-SHA256",iterations:600000,cipher:"AES-GCM",updatedAt:d.updatedAt||new Date().toISOString(),salt:b64(salt),iv:b64(iv),data:b64(ct)}}
+async function decryptVault(v,p){const oldFormat=!!v.data,iterations=Number(v.iterations||(oldFormat?600000:180000)),payload=v.data||v.ciphertext;if(!v.salt||!v.iv||!payload)throw new Error("Nieznany format sejfu");const k=await deriveKey(p,unb64(v.salt),iterations),pt=await crypto.subtle.decrypt({name:"AES-GCM",iv:unb64(v.iv)},k,unb64(payload));return JSON.parse(new TextDecoder().decode(pt))}
+'''
+          s,n=re.subn(crypto_pattern,crypto_new,s,count=1,flags=re.S)
+          if n!=1: raise SystemExit(f'Crypto block patch count={n}; refusing unsafe patch')
+          unlock_pattern=r'\$\("unlockBtn"\)\.onclick=async\(\)=>\{.*?\};\nfunction bindEnterLogin'
+          unlock_new='''$("unlockBtn").onclick=async()=>{const p=$("unlockPassword").value;let decoded;try{decoded=await decryptVault(JSON.parse(localStorage.getItem(LS_VAULT)),p)}catch(e){console.warn("Vault decrypt failed",e);toast("Nieprawidłowe hasło");return}data=decoded;currentPassword=p;sessionStorage.setItem(LS_SESSION,p);$("unlockModal").classList.remove("show");try{migrateData();render();fetchCryptoPrices(false)}catch(e){console.error("UI after unlock",e);toast("Hasło poprawne — błąd interfejsu")}};
+function bindEnterLogin'''
+          s,n=re.subn(unlock_pattern,unlock_new,s,count=1,flags=re.S)
+          if n!=1: raise SystemExit(f'Unlock patch count={n}; refusing unsafe patch')
+          s=s.replace('content="0.5.2"','content="0.5.2.1"',1).replace('UI Tiles · v0.5.2','UI Tiles · v0.5.2.1',1)
+          p.write_text(s,encoding='utf-8')
+      - name: Validate JavaScript
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text()
+          js='\n'.join(re.findall(r'<script(?: [^>]*)?>(.*?)</script>',s,re.S))
+          Path('/tmp/budgetflow.js').write_text(js)
+          PY
+          node --check /tmp/budgetflow.js
+      - name: Commit compatibility hotfix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Restore BudgetFlow vault compatibility"
+          git push
