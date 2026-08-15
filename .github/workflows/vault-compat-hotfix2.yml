@@ -1,0 +1,42 @@
+name: BudgetFlow vault compatibility hotfix 2
+
+on:
+  push:
+    paths:
+      - '.github/workflows/vault-compat-hotfix2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch vault compatibility
+        shell: python
+        run: |
+          from pathlib import Path
+          import re, base64
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          crypto_new=base64.b64decode('YXN5bmMgZnVuY3Rpb24gZGVyaXZlS2V5KHAscyxpdGVyYXRpb25zPTYwMDAwMCl7Y29uc3QgbWF0ZXJpYWw9YXdhaXQgY3J5cHRvLnN1YnRsZS5pbXBvcnRLZXkoInJhdyIsbmV3IFRleHRFbmNvZGVyKCkuZW5jb2RlKHApLCJQQktERjIiLGZhbHNlLFsiZGVyaXZlS2V5Il0pO3JldHVybiBjcnlwdG8uc3VidGxlLmRlcml2ZUtleSh7bmFtZToiUEJLREYyIixzYWx0OnMsaXRlcmF0aW9ucyxoYXNoOiJTSEEtMjU2In0sbWF0ZXJpYWwse25hbWU6IkFFUy1HQ00iLGxlbmd0aDoyNTZ9LGZhbHNlLFsiZW5jcnlwdCIsImRlY3J5cHQiXSl9CmNvbnN0IGI2ND1hPT5idG9hKFN0cmluZy5mcm9tQ2hhckNvZGUoLi4uYSkpLHVuYjY0PXM9PlVpbnQ4QXJyYXkuZnJvbShhdG9iKHMpLGM9PmMuY2hhckNvZGVBdCgwKSk7CmFzeW5jIGZ1bmN0aW9uIGVuY3J5cHRWYXVsdChkLHApe2NvbnN0IHNhbHQ9Y3J5cHRvLmdldFJhbmRvbVZhbHVlcyhuZXcgVWludDhBcnJheSgxNikpLGl2PWNyeXB0by5nZXRSYW5kb21WYWx1ZXMobmV3IFVpbnQ4QXJyYXkoMTIpKSxrPWF3YWl0IGRlcml2ZUtleShwLHNhbHQsNjAwMDAwKSxjdD1uZXcgVWludDhBcnJheShhd2FpdCBjcnlwdG8uc3VidGxlLmVuY3J5cHQoe25hbWU6IkFFUy1HQ00iLGl2fSxrLG5ldyBUZXh0RW5jb2RlcigpLmVuY29kZShKU09OLnN0cmluZ2lmeShkKSkpKTtyZXR1cm57Zm9ybWF0OiJCdWRnZXRGbG93LUJGREIiLHZlcnNpb246MixrZGY6IlBCS0RGMi1TSEEyNTYiLGl0ZXJhdGlvbnM6NjAwMDAwLGNpcGhlcjoiQUVTLUdDTSIsdXBkYXRlZEF0OmQudXBkYXRlZEF0fHxuZXcgRGF0ZSgpLnRvSVNPU3RyaW5nKCksc2FsdDpiNjQoc2FsdCksaXY6YjY0KGl2KSxkYXRhOmI2NChjdCl9fQphc3luYyBmdW5jdGlvbiBkZWNyeXB0VmF1bHQodixwKXtjb25zdCBvbGRGb3JtYXQ9ISF2LmRhdGEsaXRlcmF0aW9ucz1OdW1iZXIodi5pdGVyYXRpb25zfHwob2xkRm9ybWF0PzYwMDAwMDoxODAwMDApKSxwYXlsb2FkPXYuZGF0YXx8di5jaXBoZXJ0ZXh0O2lmKCF2LnNhbHR8fCF2Lml2fHwhcGF5bG9hZCl0aHJvdyBuZXcgRXJyb3IoIk5pZXpuYW55IGZvcm1hdCBzZWpmdSIpO2NvbnN0IGs9YXdhaXQgZGVyaXZlS2V5KHAsdW5iNjQodi5zYWx0KSxpdGVyYXRpb25zKSxwdD1hd2FpdCBjcnlwdG8uc3VidGxlLmRlY3J5cHQoe25hbWU6IkFFUy1HQ00iLGl2OnVuYjY0KHYuaXYpfSxrLHVuYjY0KHBheWxvYWQpKTtyZXR1cm4gSlNPTi5wYXJzZShuZXcgVGV4dERlY29kZXIoKS5kZWNvZGUocHQpKX0K').decode()
+          unlock_new=base64.b64decode('JCgidW5sb2NrQnRuIikub25jbGljaz1hc3luYygpPT57Y29uc3QgcD0kKCJ1bmxvY2tQYXNzd29yZCIpLnZhbHVlO2xldCBkZWNvZGVkO3RyeXtkZWNvZGVkPWF3YWl0IGRlY3J5cHRWYXVsdChKU09OLnBhcnNlKGxvY2FsU3RvcmFnZS5nZXRJdGVtKExTX1ZBVUxUKSkscCl9Y2F0Y2goZSl7Y29uc29sZS53YXJuKCJWYXVsdCBkZWNyeXB0IGZhaWxlZCIsZSk7dG9hc3QoIk5pZXByYXdpZMWCb3dlIGhhc8WCbyIpO3JldHVybn1kYXRhPWRlY29kZWQ7Y3VycmVudFBhc3N3b3JkPXA7c2Vzc2lvblN0b3JhZ2Uuc2V0SXRlbShMU19TRVNTSU9OLHApOyQoInVubG9ja01vZGFsIikuY2xhc3NMaXN0LnJlbW92ZSgic2hvdyIpO3RyeXttaWdyYXRlRGF0YSgpO3JlbmRlcigpO2ZldGNoQ3J5cHRvUHJpY2VzKGZhbHNlKX1jYXRjaChlKXtjb25zb2xlLmVycm9yKCJVSSBhZnRlciB1bmxvY2siLGUpO3RvYXN0KCJIYXPFgm8gcG9wcmF3bmUg4oCUIGLFgsSFZCBpbnRlcmZlanN1Iil9fTsKZnVuY3Rpb24gYmluZEVudGVyTG9naW4=').decode()
+          s,n=re.subn(r'async function deriveKey\(p,s\)\{.*?async function saveLocal\(',crypto_new+'async function saveLocal(',s,count=1,flags=re.S)
+          if n!=1: raise SystemExit('crypto patch failed')
+          s,n=re.subn(r'\$\("unlockBtn"\)\.onclick=async\(\)=>\{.*?\};\nfunction bindEnterLogin',unlock_new,s,count=1,flags=re.S)
+          if n!=1: raise SystemExit('unlock patch failed')
+          s=s.replace('content="0.5.2"','content="0.5.2.1"',1).replace('UI Tiles · v0.5.2','UI Tiles · v0.5.2.1',1)
+          p.write_text(s,encoding='utf-8')
+      - name: Validate JavaScript
+        run: |
+          python -c "from pathlib import Path; import re; s=Path('index.html').read_text(); Path('/tmp/budgetflow.js').write_text('\\n'.join(re.findall(r'<script(?: [^>]*)?>(.*?)</script>',s,re.S)))"
+          node --check /tmp/budgetflow.js
+      - name: Commit hotfix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Restore BudgetFlow vault compatibility"
+          git push
