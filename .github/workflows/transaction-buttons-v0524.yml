@@ -1,0 +1,34 @@
+name: BudgetFlow v0.5.2.4 transaction buttons
+on:
+  push:
+    paths:
+      - '.github/workflows/transaction-buttons-v0524.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch UI
+        run: |
+          python - <<'PY'
+          import base64
+          exec(base64.b64decode("CmZyb20gcGF0aGxpYiBpbXBvcnQgUGF0aApwPVBhdGgoJ2luZGV4Lmh0bWwnKQpzPXAucmVhZF90ZXh0KGVuY29kaW5nPSd1dGYtOCcpCnM9cy5yZXBsYWNlKCdjb250ZW50PSIwLjUuMi4zIicsJ2NvbnRlbnQ9IjAuNS4yLjQiJywxKQpzPXMucmVwbGFjZSgnQXV0byBSZXN1bWUgU3luYyDCtyB2MC41LjIuMycsJ1RyYW5zYWN0aW9uIEJ1dHRvbnMgwrcgdjAuNS4yLjQnLDEpCmNzcz0nLnR4LXR5cGUtc3dpdGNoe2Rpc3BsYXk6Z3JpZDtncmlkLXRlbXBsYXRlLWNvbHVtbnM6MWZyIDFmcjtnYXA6OHB4O21hcmdpbjoxMHB4IDB9LnR4LXR5cGUtb3B0aW9ue3Bvc2l0aW9uOnJlbGF0aXZlO2N1cnNvcjpwb2ludGVyfS50eC10eXBlLW9wdGlvbiBpbnB1dHtwb3NpdGlvbjphYnNvbHV0ZTtvcGFjaXR5OjA7cG9pbnRlci1ldmVudHM6bm9uZX0udHgtdHlwZS1vcHRpb24gc3BhbntkaXNwbGF5OmZsZXg7YWxpZ24taXRlbXM6Y2VudGVyO2p1c3RpZnktY29udGVudDpjZW50ZXI7Z2FwOjdweDttaW4taGVpZ2h0OjM4cHg7Ym9yZGVyLXJhZGl1czoxMXB4O2JvcmRlcjoxcHggc29saWQgcmdiYSgyNTUsMjU1LDI1NSwuMDkpO2ZvbnQtc2l6ZToxMnB4O2ZvbnQtd2VpZ2h0Ojg1MDt0cmFuc2l0aW9uOi4xOHM7YmFja2dyb3VuZDpyZ2JhKDI1NSwyNTUsMjU1LC4wMjUpfS50eC10eXBlLW9wdGlvbi5leHBlbnNlIHNwYW57Y29sb3I6I2ZmOGFhMn0udHgtdHlwZS1vcHRpb24uaW5jb21lIHNwYW57Y29sb3I6IzY2ZGRhMH0udHgtdHlwZS1vcHRpb24uZXhwZW5zZSBzcGFuOjpiZWZvcmV7Y29udGVudDoi4oiSIjtmb250LXNpemU6MTdweDtmb250LXdlaWdodDo5MDB9LnR4LXR5cGUtb3B0aW9uLmluY29tZSBzcGFuOjpiZWZvcmV7Y29udGVudDoiKyI7Zm9udC1zaXplOjE2cHg7Zm9udC13ZWlnaHQ6OTAwfS50eC10eXBlLW9wdGlvbi5leHBlbnNlIGlucHV0OmNoZWNrZWQrc3BhbntiYWNrZ3JvdW5kOnJnYmEoMjU1LDk2LDEyMiwuMTQpO2JvcmRlci1jb2xvcjpyZ2JhKDI1NSw5NiwxMjIsLjQ4KX0udHgtdHlwZS1vcHRpb24uaW5jb21lIGlucHV0OmNoZWNrZWQrc3BhbntiYWNrZ3JvdW5kOnJnYmEoOTAsMjIwLDE1NSwuMTQpO2JvcmRlci1jb2xvcjpyZ2JhKDkwLDIyMCwxNTUsLjQ4KX0udHgtdHlwZS1vcHRpb246aG92ZXIgc3Bhbnt0cmFuc2Zvcm06dHJhbnNsYXRlWSgtMXB4KTtmaWx0ZXI6YnJpZ2h0bmVzcygxLjA4KX0nCnM9cy5yZXBsYWNlKCc8L3N0eWxlPicsY3NzKyc8L3N0eWxlPicsMSkKb2xkPSc8ZGl2IGNsYXNzPSJ0d28iPjxsYWJlbD48aW5wdXQgdHlwZT0icmFkaW8iIG5hbWU9InR5cGUiIHZhbHVlPSJleHBlbnNlIiBjaGVja2VkPiBXeWRhdGVrPC9sYWJlbD48bGFiZWw+PGlucHV0IHR5cGU9InJhZGlvIiBuYW1lPSJ0eXBlIiB2YWx1ZT0iaW5jb21lIj4gUHJ6eWNow7NkPC9sYWJlbD48L2Rpdj4nCm5ldz0nPGRpdiBjbGFzcz0idHgtdHlwZS1zd2l0Y2giIGFyaWEtbGFiZWw9IlR5cCB0cmFuc2FrY2ppIj48bGFiZWwgY2xhc3M9InR4LXR5cGUtb3B0aW9uIGV4cGVuc2UiPjxpbnB1dCB0eXBlPSJyYWRpbyIgbmFtZT0idHlwZSIgdmFsdWU9ImV4cGVuc2UiIGNoZWNrZWQ+PHNwYW4+V3lkYXRlazwvc3Bhbj48L2xhYmVsPjxsYWJlbCBjbGFzcz0idHgtdHlwZS1vcHRpb24gaW5jb21lIj48aW5wdXQgdHlwZT0icmFkaW8iIG5hbWU9InR5cGUiIHZhbHVlPSJpbmNvbWUiPjxzcGFuPlByenljaMOzZDwvc3Bhbj48L2xhYmVsPjwvZGl2PicKaWYgb2xkIG5vdCBpbiBzOiByYWlzZSBTeXN0ZW1FeGl0KCd0cmFuc2FjdGlvbiByYWRpbyBtYXJrZXIgbm90IGZvdW5kJykKcz1zLnJlcGxhY2Uob2xkLG5ldyw xKS5yZXBsYWNlKCcseCknLCcsMSknKQpwLndyaXRlX3RleHQocyxlbmNvZGluZz0ndXRmLTgnKQo=".replace(" ","")).decode())
+          PY
+      - name: Validate
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text()
+          Path('/tmp/budgetflow.js').write_text('\n'.join(re.findall(r'<script(?: [^>]*)?>(.*?)</script>',s,re.S)))
+          PY
+          node --check /tmp/budgetflow.js
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "BudgetFlow v0.5.2.4 transaction type buttons"
+          git push
