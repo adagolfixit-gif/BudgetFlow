@@ -88,7 +88,9 @@ function updateCryptoTotalValue(){
   value.textContent=money(totalCryptoValue());
 }
 function findHistoryCard(){
-  const heading=Array.from(document.querySelectorAll(".card h2")).find(h=>h.textContent.toLowerCase().includes("historia"));
+  const eyebrow=Array.from(document.querySelectorAll(".card .eyebrow")).find(e=>e.textContent.trim().toLowerCase().includes("historia miesiąca"));
+  if(eyebrow)return eyebrow.closest(".card");
+  const heading=Array.from(document.querySelectorAll(".card h2")).find(h=>h.textContent.trim().toLowerCase()==="transakcje");
   return heading?.closest(".card")||null;
 }
 function applyHistoryTypeFilter(){
