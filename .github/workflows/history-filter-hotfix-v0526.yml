@@ -1,0 +1,34 @@
+name: BudgetFlow v0.5.2.6 history filter hotfix
+on:
+  push:
+    paths:
+      - '.github/workflows/history-filter-hotfix-v0526.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch selector
+        run: |
+          python - <<'PY'
+          import base64
+          exec(base64.b64decode("CmZyb20gcGF0aGxpYiBpbXBvcnQgUGF0aAppbXBvcnQgcmUKcD1QYXRoKCJpbmRleC5odG1sIikKcz1wLnJlYWRfdGV4dChlbmNvZGluZz0idXRmLTgiKQoKcz1yZS5zdWIocidjb250ZW50PSIwXC41XC4yXC41IicsJ2NvbnRlbnQ9IjAuNS4yLjYiJyxzLGNvdW50PTEpCnM9cy5yZXBsYWNlKCdIaXN0b3J5IEZpbHRlcnMgJiBDcnlwdG8gVG90YWwgwrwgdjAuNS4yLjUnLCdIaXN0b3J5IEZpbHRlcnMgSG90Zml4IMK3IHYwLjUuMi42JywxKQoKb2xkPScnJ2Z1bmN0aW9uIGZpbmRIaXN0b3J5Q2FyZCgpewogIGNvbnN0IGhlYWRpbmc9QXJyYXkuZnJvbShkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCIuY2FyZCBoMiIpKS5maW5kKGg9PmgudGV4dENvbnRlbnQudG9Mb3dlckNhc2UoKS5pbmNsdWRlcygiaGlzdG9yaWEiKSk7CiAgcmV0dXJuIGhlYWRpbmc/LmNsb3Nlc3QoIi5jYXJkIil8fG51bGw7Cn0nJycKbmV3PScnJ2Z1bmN0aW9uIGZpbmRIaXN0b3J5Q2FyZCgpewogIGNvbnN0IGV5ZWJyb3c9QXJyYXkuZnJvbShkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCIuY2FyZCAuZXllYnJvdyIpKS5maW5kKGU9PmUudGV4dENvbnRlbnQudHJpbSgpLnRvTG93ZXJDYXNlKCkuaW5jbHVkZXMoImhpc3RvcmlhIG1pZXNpxIVjYSIpKTsKICBpZihleWVicm93KXJldHVybiBleWVicm93LmNsb3Nlc3QoIi5jYXJkIik7CiAgY29uc3QgaGVhZGluZz1BcnJheS5mcm9tKGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3JBbGwoIi5jYXJkIGgyIikpLmZpbmQoaD0+aC50ZXh0Q29udGVudC50cmltKCkudG9Mb3dlckNhc2UoKT09PSJ0cmFuc2FrY2plIik7CiAgcmV0dXJuIGhlYWRpbmc/LmNsb3Nlc3QoIi5jYXJkIil8fG51bGw7Cn0nJycKaWYgb2xkIG5vdCBpbiBzOgogICAgcmFpc2UgU3lzdGVtRXhpdCgiZmluZEhpc3RvcnlDYXJkIG1hcmtlciBub3QgZm91bmQiKQpzPXMucmVwbGFjZShvbGQsbmV3LDEpCgpwLndyaXRlX3RleHQocyxlbmNvZGluZz0idXRmLTgiKQpwcmludCgicGF0Y2hlZCIpCg==").decode())
+          PY
+      - name: Validate JavaScript
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text(encoding='utf-8')
+          Path('/tmp/budgetflow.js').write_text('\n'.join(re.findall(r'<script(?: [^>]*)?>(.*?)</script>',s,re.S)),encoding='utf-8')
+          PY
+          node --check /tmp/budgetflow.js
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "BudgetFlow v0.5.2.6 fix history filters"
+          git push
