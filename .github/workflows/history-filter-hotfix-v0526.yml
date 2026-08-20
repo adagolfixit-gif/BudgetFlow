@@ -1,8 +1,7 @@
 name: BudgetFlow manual crypto refresh
 on:
-  push:
-    paths:
-      - '.github/workflows/history-filter-hotfix-v0526.yml'
+  issues:
+    types: [opened]
 permissions:
   contents: write
 jobs:
