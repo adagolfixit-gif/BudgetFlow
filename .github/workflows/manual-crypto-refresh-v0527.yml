@@ -1,0 +1,34 @@
+name: BudgetFlow v0.5.2.7 manual crypto refresh
+on:
+  push:
+    paths:
+      - '.github/workflows/manual-crypto-refresh-v0527.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch BudgetFlow
+        run: |
+          python - <<'PY'
+          import base64
+          exec(base64.b64decode("CmZyb20gcGF0aGxpYiBpbXBvcnQgUGF0aAppbXBvcnQgcmUKcD1QYXRoKCJpbmRleC5odG1sIikKcz1wLnJlYWRfdGV4dChlbmNvZGluZz0idXRmLTgiKQoKcz1yZS5zdWIocidjb250ZW50PSIwXFwuNVxcLjJcXC5cXGQrIicsJ2NvbnRlbnQ9IjAuNS4yLjciJyxzLGNvdW50PTEpCnM9cmUuc3ViKHInKD86SGlzdG9yeSBGaWx0ZXJzIEhvdGZpeHxIaXN0b3J5IEZpbHRlcnMgJiBDcnlwdG8gVG90YWx8VHJhbnNhY3Rpb24gQnV0dG9uc3xBdXRvIFJlc3VtZSBTeW5jKSDCtyB2MC41LjIuXFxkKycsCiAgICAgICAgICdNYW51YWwgQ3J5cHRvIFJlZnJlc2ggwrsgdjAuNS4yLjcnLHMsY291bnQ9MSkKCmNzcz0nLmNyeXB0by1yZWZyZXNoLWJ0bntwb3NpdGlvbjphYnNvbHV0ZTt0b3A6NjdweDtyaWdodDoxOHB4O2JvcmRlcjoxcHggc29saWQgcmdiYSgxMDEsMjE3LDI1NSwuMjIpO2JhY2tncm91bmQ6cmdiYSgxMDEsMjE3LDI1NSwuMDcpO2NvbG9yOiM5ZWRmZjA7Ym9yZGVyLXJhZGl1czo5cHg7cGFkZGluZzo2cHggOXB4O2ZvbnQtc2l6ZToxMHB4O2ZvbnQtd2VpZ2h0OjgwMDtjdXJzb3I6cG9pbnRlcjt0cmFuc2l0aW9uOi4xOHN9LmNyeXB0by1yZWZyZXNoLWJ0bjpob3Zlcnt0cmFuc2Zvcm06dHJhbnNsYXRlWSgtMXB4KTtmaWx0ZXI6YnJpZ2h0bmVzcygxLjEpO2JvcmRlci1jb2xvcjpyZ2JhKDEwMSwyMTcsMjU1LC4zOCl9LmNyeXB0by1yZWZyZXNoLWJ0bjpkaXNhYmxlZHtvcGFjaXR5Oi41NTtjdXJzb3I6d2FpdDt0cmFuc2Zvcm06bm9uZX0nCmlmIGNzcyBub3QgaW4gczoKICAgIHM9cy5yZXBsYWNlKCI8L3N0eWxlPiIsY3NzKyI8L3N0eWxlPiIsMSkKCm9sZD0nJycgIGlmKCF2YWx1ZSl7dmFsdWU9ZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgiZGl2Iik7dmFsdWUuY2xhc3NOYW1lPSJjcnlwdG8tdG90YWwtdmFsdWUiO2JveC5hcHBlbmRDaGlsZCh2YWx1ZSl9CiAgaWYoIWxhYmVsKXtsYWJlbD1kb2N1bWVudC5jcmVhdGVFbGVtZW50KCJkaXYiKTtsYWJlbC5jbGFzc05hbWU9ImNyeXB0by10b3RhbC1sYWJlbCI7bGFiZWwudGV4dENvbnRlbnQ9IsWBxIVjem5pZSI7Ym94LmFwcGVuZENoaWxkKGxhYmVsKX0KICB2YWx1ZS50ZXh0Q29udGVudD1tb25leSh0b3RhbENyeXB0b1ZhbHVlKCkpOwp9JycnCm5ldz0nJycgIGlmKCF2YWx1ZSl7dmFsdWU9ZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgiZGl2Iik7dmFsdWUuY2xhc3NOYW1lPSJjcnlwdG8tdG90YWwtdmFsdWUiO2JveC5hcHBlbmRDaGlsZCh2YWx1ZSl9CiAgaWYoIWxhYmVsKXtsYWJlbD1kb2N1bWVudC5jcmVhdGVFbGVtZW50KCJkaXYiKTtsYWJlbC5jbGFzc05hbWU9ImNyeXB0by10b3RhbC1sYWJlbCI7bGFiZWwudGV4dENvbnRlbnQ9IsWBxIVjem5pZSI7Ym94LmFwcGVuZENoaWxkKGxhYmVsKX0KICBsZXQgcmVmcmVzaD1ib3gucXVlcnlTZWxlY3RvcigiLmNyeXB0by1yZWZyZXNoLWJ0biIpOwogIGlmKCFyZWZyZXNoKXsKICAgIHJlZnJlc2g9ZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgiYnV0dG9uIik7CiAgICByZWZyZXNoLnR5cGU9ImJ1dHRvbiI7CiAgICByZWZyZXNoLmNsYXNzTmFtZT0iY3J5cHRvLXJlZnJlc2gtYnRuIjsKICAgIHJlZnJlc2gudGV4dENvbnRlbnQ9IuKGuyBQb2JpZXJ6IGt1cnN5IjsKICAgIHJlZnJlc2gub25jbGljaz1hc3luYygpPT57CiAgICAgIHJlZnJlc2guZGlzYWJsZWQ9dHJ1ZTsKICAgICAgY29uc3Qgb2xkVGV4dD1yZWZyZXNoLnRleHRDb250ZW50OwogICAgICByZWZyZXNoLnRleHRDb250ZW50PSLigrsIFBvYmllcmFtxKbigKYiOwogICAgICBtYXJrZXRGZXRjaERvbmU9ZmFsc2U7CiAgICAgIHRyeXthd2FpdCBmZXRjaENyeXB0b1ByaWNlcyh0cnVlKX0KICAgICAgZmluYWxseXtyZWZyZXNoLmRpc2FibGVkPWZhbHNlO3JlZnJlc2gudGV4dENvbnRlbnQ9b2xkVGV4dDt1cGRhdGVDcnlwdG9Ub3RhbFZhbHVlKCl9CiAgICB9OwogICAgYm94LmFwcGVuZENoaWxkKHJlZnJlc2gpOwogIH0KICB2YWx1ZS50ZXh0Q29udGVudD1tb25leSh0b3RhbENyeXB0b1ZhbHVlKCkpOwp9JycnCmlmIG9sZCBub3QgaW4gczoKICAgIHJhaXNlIFN5c3RlbUV4aXQoImNyeXB0byB0b3RhbCBtYXJrZXIgbm90IGZvdW5kIikKcz1zLnJlcGxhY2Uob2xkLG5ldywxKQoKcC53cml0ZV90ZXh0KHMsZW5jb2Rpbmc9InV0Zi04IikKcHJpbnQoInBhdGNoZWQiKQo=").decode("utf-8"))
+          PY
+      - name: Validate JavaScript
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text(encoding='utf-8')
+          Path('/tmp/budgetflow.js').write_text('\n'.join(re.findall(r'<script(?: [^>]*)?>(.*?)</script>',s,re.S)),encoding='utf-8')
+          PY
+          node --check /tmp/budgetflow.js
+      - name: Commit production update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "BudgetFlow v0.5.2.7 manual crypto refresh"
+          git push
