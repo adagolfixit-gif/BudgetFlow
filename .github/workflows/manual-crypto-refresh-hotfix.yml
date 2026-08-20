@@ -1,0 +1,34 @@
+name: BudgetFlow manual crypto refresh hotfix
+on:
+  push:
+    paths:
+      - '.github/workflows/manual-crypto-refresh-hotfix.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch
+        run: |
+          python - <<'PY'
+          import base64
+          exec(base64.b64decode("CmZyb20gcGF0aGxpYiBpbXBvcnQgUGF0aApwPVBhdGgoImluZGV4Lmh0bWwiKQpzPXAucmVhZF90ZXh0KGVuY29kaW5nPSJ1dGYtOCIpCgppZiAiLmNyeXB0by1yZWZyZXNoLWJ0bnsiIG5vdCBpbiBzOgogICAgY3NzPScuY3J5cHRvLXJlZnJlc2gtYnRue3Bvc2l0aW9uOmFic29sdXRlO3RvcDo2N3B4O3JpZ2h0OjE4cHg7Ym9yZGVyOjFweCBzb2xpZCByZ2JhKDEwMSwyMTcsMjU1LC4yMik7YmFja2dyb3VuZDpyZ2JhKDEwMSwyMTcsMjU1LC4wNyk7Y29sb3I6IzllZGZmMDtib3JkZXItcmFkaXVzOjlweDtwYWRkaW5nOjZweCA5cHg7Zm9udC1zaXplOjEwcHg7Zm9udC13ZWlnaHQ6ODAwO2N1cnNvcjpwb2ludGVyO3RyYW5zaXRpb246LjE4c30uY3J5cHRvLXJlZnJlc2gtYnRuOmhvdmVye3RyYW5zZm9ybTp0cmFuc2xhdGVZKC0xcHgpO2ZpbHRlcjpibmlnaHRuZXNzKDEuMSk7Ym9yZGVyLWNvbG9yOnJnYmEoMTAxLDIxNywyNTUsLjM4KX0uY3J5cHRvLXJlZnJlc2gtYnRuOmRpc2FibGVke29wYWNpdHk6LjU1O2N1cnNvcjp3YWl0O3RyYW5zZm9ybTpub25lfScKICAgIHM9cy5yZXBsYWNlKCI8L3N0eWxlPiIsY3NzKyI8L3N0eWxlPiIsMSkKCm5lZWRsZT0nICB2YWx1ZS50ZXh0Q29udGVudD1tb25leSh0b3RhbENyeXB0b1ZhbHVlKCkpO1xcbn0nCmluc2VydD0nJycgIGxldCByZWZyZXNoPWJveC5xdWVyeVNlbGVjdG9yKCIuY3J5cHRvLXJlZnJlc2gtYnRuIik7CiAgaWYoIXJlZnJlc2gpewogICAgcmVmcmVzaD1kb2N1bWVudC5jcmVhdGVFbGVtZW50KCJidXR0b24iKTsKICAgIHJlZnJlc2gudHlwZT0iYnV0dG9uIjsKICAgIHJlZnJlc2guY2xhc3NOYW1lPSJjcnlwdG8tcmVmcmVzaC1idG4iOwogICAgcmVmcmVzaC50ZXh0Q29udGVudD0i4oa7IFBvYmllcnoga3Vyc3kiOwogICAgcmVmcmVzaC5vbmNsaWNrPWFzeW5jKCk9PnsKICAgICAgcmVmcmVzaC5kaXNhYmxlZD10cnVlOwogICAgICByZWZyZXNoLnRleHRDb250ZW50PSLigrsIFBvYmllcmFtxKbigKYiOwogICAgICBtYXJrZXRGZXRjaERvbmU9ZmFsc2U7CiAgICAgIHRyeXthd2FpdCBmZXRjaENyeXB0b1ByaWNlcyh0cnVlKX0KICAgICAgZmluYWxseXsKICAgICAgICByZWZyZXNoLmRpc2FibGVkPWZhbHNlOwogICAgICAgIHJlZnJlc2gudGV4dENvbnRlbnQ9IuKGuyBQb2JpZXJ6IGt1cnN5IjsKICAgICAgICB1cGRhdGVDcnlwdG9Ub3RhbFZhbHVlKCk7CiAgICAgIH0KICAgIH07CiAgICBib3guYXBwZW5kQ2hpbGQocmVmcmVzaCk7CiAgfQogIHZhbHVlLnRleHRDb250ZW50PW1vbmV5KHRvdGFsQ3J5cHRvVmFsdWUoKSk7Cn0nJycKaWYgIi5jcnlwdG8tcmVmcmVzaC1idG4iIG5vdCBpbiBzW3MuZmluZCgiZnVuY3Rpb24gdXBkYXRlQ3J5cHRvVG90YWxWYWx1ZSIpOnMuZmluZCgiZnVuY3Rpb24gZmluZEhpc3RvcnlDYXJkIildOgogICAgaWYgbmVlZGxlIG5vdCBpbiBzOgogICAgICAgIHJhaXNlIFN5c3RlbUV4aXQoImNyeXB0byB0b3RhbCBmdW5jdGlvbiBlbmRpbmcgbm90IGZvdW5kIikKICAgIHM9cy5yZXBsYWNlKG5lZWRsZSxpbnNlcnQsMSkKCnAud3JpdGVfdGV4dChzLGVuY29kaW5nPSJ1dGYtOCIpCnByaW50KCJtYW51YWwgcmVmcmVzaCBwYXRjaGVkIikK").decode("utf-8"))
+          PY
+      - name: Validate
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text(encoding='utf-8')
+          Path('/tmp/budgetflow.js').write_text('\n'.join(re.findall(r'<script(?: [^>]*)?>(.*?)</script>',s,re.S)),encoding='utf-8')
+          PY
+          node --check /tmp/budgetflow.js
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Add manual crypto price refresh"
+          git push
